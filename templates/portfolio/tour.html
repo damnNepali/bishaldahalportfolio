@@ -1,0 +1,67 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{ profile.name }} — 3D portfolio tour</title>
+<meta name="description" content="{{ profile.intro|default:profile.headline|truncatechars:155 }}">
+<meta property="og:title" content="{{ profile.name }} — {{ profile.headline }}">
+<meta property="og:description" content="Take a 3D tour of {{ profile.name }}'s portfolio.">
+<meta property="og:image" content="{% if profile.photo %}{{ request.scheme }}://{{ request.get_host }}{{ profile.photo.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/bishal-portrait.jpg' %}{% endif %}">
+<meta name="theme-color" content="#EEF1F7">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♞</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/bd-tour.css' %}?v=2">
+<link rel="modulepreload" href="{% static 'js/bd-tour.min.js' %}?v=2">
+</head>
+<body>
+{% include "portfolio/partials/pieces_sprite.html" %}
+<main id="tour">
+  <canvas id="scene" aria-label="3D chessboard world where {{ profile.name }}'s avatar guides you through the portfolio"></canvas>
+  <div class="bubble" id="bubble" role="status" aria-live="polite"></div>
+
+  <header class="tbar">
+    <a class="brand" href="{% url 'tour' %}"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#pc-n"/></svg><span>{{ profile.name }}</span></a>
+    <span class="stop-label" id="stopLabel">Welcome</span>
+    <div class="tbar-r">
+      <button class="icon-btn" id="soundBtn" type="button" aria-pressed="false" title="Sound">🔇<span class="sr">Sound off</span></button>
+      <a class="pill" href="{% url 'home' %}">Classic view</a>
+    </div>
+  </header>
+
+  <aside class="panel" id="panel" aria-label="Section content">
+    <button class="panel-toggle" id="panelToggle" type="button" aria-label="Show or hide details"><span></span><b id="panelToggleLabel">Welcome</b> <em>Details</em></button>
+    <div class="panel-body" id="panelBody"></div>
+  </aside>
+
+  <nav class="dock" aria-label="Tour navigation">
+    <button class="dock-btn" id="prevBtn" type="button" aria-label="Previous stop">‹</button>
+    <div class="stops" id="stops"></div>
+    <button class="dock-btn" id="nextBtn" type="button" aria-label="Next stop">›</button>
+  </nav>
+  <div class="scene-actions">
+    <button class="t-btn" id="skipBtn" type="button" hidden>Skip scene ⏭</button>
+    <button class="t-btn" id="replayBtn" type="button" hidden>Replay scene ↺</button>
+  </div>
+
+  <div class="gate" id="gate">
+    <div class="gate-card">
+      <svg class="gate-pc" viewBox="0 0 100 100" aria-hidden="true"><use href="#pc-k"/></svg>
+      <p class="gate-kicker">Welcome to my portfolio</p>
+      <h1>{{ profile.name }}</h1>
+      <p class="gate-sub">{{ profile.headline }} {{ profile.tagline }}</p>
+      <div class="gate-btns">
+        <button class="t-btn solid big" id="enterSound" type="button">Enter with sound 🔊</button>
+        <button class="t-btn big" id="enterQuiet" type="button">Enter quietly</button>
+      </div>
+      <a class="gate-link" href="{% url 'home' %}">Skip to the classic portfolio</a>
+      <p class="gate-status" id="gateStatus">Loading the board…</p>
+    </div>
+  </div>
+  <noscript><div class="gate"><div class="gate-card"><h1>{{ profile.name }}</h1><p>The 3D tour needs JavaScript.</p><a class="t-btn solid" href="{% url 'home' %}">Open the classic portfolio</a></div></div></noscript>
+</main>
+{{ tour_data|json_script:"tour-data" }}
+<script type="module" src="{% static 'js/bd-tour.min.js' %}?v=2"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}{{ profile.name }} — {{ profile.headline }}{% endblock %}</title>
+<meta name="description" content="{{ profile.intro|default:profile.headline|truncatechars:155 }}">
+<meta property="og:title" content="{{ profile.name }} — {{ profile.headline }}">
+<meta property="og:description" content="{{ profile.intro|truncatechars:155 }}">
+<meta property="og:type" content="website">
+<meta property="og:image" content="{% if profile.photo %}{{ request.scheme }}://{{ request.get_host }}{{ profile.photo.url }}{% else %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/bishal-portrait.jpg' %}{% endif %}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FBFBFD">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>♞</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/bd-portfolio.css' %}?v=5">
+<link rel="alternate" type="application/rss+xml" title="Blog" href="{% url 'blog:feed' %}">
+{% block head %}{% endblock %}
+<script>document.documentElement.classList.add('js')</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"{{ profile.name|escapejs }}","jobTitle":"{{ profile.headline|escapejs }}","address":"{{ profile.location|escapejs }}"}
+</script>
+</head>
+<body>
+{% include "portfolio/partials/pieces_sprite.html" %}
+<a class="skip" href="#main">Skip to content</a>
+{% include "portfolio/partials/nav.html" %}
+<main id="main">{% block content %}{% endblock %}</main>
+{% include "portfolio/partials/footer.html" %}
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="{% static 'vendor/gsap.min.js' %}" defer></script>
+<script src="{% static 'vendor/ScrollTrigger.min.js' %}" defer></script>
+<script src="{% static 'vendor/lenis.min.js' %}" defer></script>
+<script src="{% static 'js/bd-board.js' %}?v=5" defer></script>
+<script src="{% static 'js/bd-main.js' %}?v=5" defer></script>
+</body>
+</html>

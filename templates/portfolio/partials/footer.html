@@ -1,0 +1,14 @@
+<footer class="footer">
+  <div class="foot-pieces" aria-hidden="true">
+    {% include "portfolio/partials/piece.html" with p="r" cls="ivory" %}{% include "portfolio/partials/piece.html" with p="n" cls="onyx" %}{% include "portfolio/partials/piece.html" with p="b" cls="ivory" %}{% include "portfolio/partials/piece.html" with p="q" cls="gold" %}{% include "portfolio/partials/piece.html" with p="k" cls="gold" %}{% include "portfolio/partials/piece.html" with p="b" cls="onyx" %}{% include "portfolio/partials/piece.html" with p="n" cls="ivory" %}{% include "portfolio/partials/piece.html" with p="r" cls="onyx" %}
+  </div>
+  <p class="foot-big">Your move.</p>
+  <div class="socials center">
+    {% if profile.linkedin %}<a class="btn sm" href="{{ profile.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
+    {% if profile.github %}<a class="btn sm" href="{{ profile.github }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+    {% if profile.instagram %}<a class="btn sm" href="{{ profile.instagram }}" target="_blank" rel="noopener">Instagram</a>{% endif %}
+    {% if profile.facebook %}<a class="btn sm" href="{{ profile.facebook }}" target="_blank" rel="noopener">Facebook</a>{% endif %}
+    {% if profile.youtube %}<a class="btn sm" href="{{ profile.youtube }}" target="_blank" rel="noopener">YouTube</a>{% endif %}
+  </div>
+  <div class="foot-row"><span>© {% now "Y" %} {{ profile.name }} · {{ profile.location }}</span><a href="#top">Back to top</a></div>
+</footer>

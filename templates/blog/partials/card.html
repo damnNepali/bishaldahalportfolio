@@ -1,0 +1,11 @@
+<a class="post-card rv tilt" href="{{ post.get_absolute_url }}"><span class="spot" aria-hidden="true"></span>
+  <div class="post-cover">
+    {% if post.cover %}<img src="{{ post.cover.url }}" alt="" loading="lazy">{% else %}<div class="post-ph">{% include "portfolio/partials/piece.html" with p="n" cls="gold" %}</div>{% endif %}
+  </div>
+  <div class="post-body">
+    <span class="post-meta">{{ post.published_at|date:"M j, Y" }} · {{ post.reading_minutes }} min read</span>
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.excerpt }}</p>
+    {% if post.tags.all %}<ul class="chips">{% for t in post.tags.all %}<li>{{ t.name }}</li>{% endfor %}</ul>{% endif %}
+  </div>
+</a>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — {{ profile.name }}{% endblock %}
+{% block head %}
+<meta property="article:published_time" content="{{ post.published_at|date:'c' }}">
+<link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"{{ post.title|escapejs }}","datePublished":"{{ post.published_at|date:'c' }}","dateModified":"{{ post.updated_at|date:'c' }}","author":{"@type":"Person","name":"{{ profile.name|escapejs }}"},"description":"{{ post.excerpt|escapejs }}"}</script>
+{% endblock %}
+{% block content %}
+<div class="read-progress" aria-hidden="true"><i id="readBar"></i></div>
+<article class="post">
+  <header class="post-head wrap narrow">
+    {% if not post.is_live %}<p class="draft-note">Preview — this post is {% if post.status == 'draft' %}a draft{% else %}scheduled{% endif %} and only visible to you.</p>{% endif %}
+    <a class="back link" href="{% url 'blog:list' %}">All posts</a>
+    <h1 class="title-anim">{{ post.title }}</h1>
+    <p class="lead rv">{{ post.excerpt }}</p>
+    <div class="byline rv">
+      <span>{{ profile.name }}</span><span>{{ post.published_at|date:"F j, Y" }}</span><span>{{ post.reading_minutes }} min read</span>
+    </div>
+    {% if post.tags.all %}<ul class="chips rv">{% for t in post.tags.all %}<li><a href="{% url 'blog:tag' t.slug %}">{{ t.name }}</a></li>{% endfor %}</ul>{% endif %}
+  </header>
+  {% if post.cover %}<figure class="post-hero-img wrap"><img src="{{ post.cover.url }}" alt="" data-parallax></figure>{% endif %}
+  <div class="prose wrap narrow" id="prose">{{ post.body_html|safe }}</div>
+  <footer class="post-foot wrap narrow">
+    <div class="share">
+      <span>Share</span>
+      <a class="btn sm" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri|urlencode }}">Facebook</a>
+      <a class="btn sm" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri|urlencode }}">LinkedIn</a>
+      <a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}">WhatsApp</a>
+      <button class="btn sm" type="button" data-copy="{{ request.build_absolute_uri }}">Copy link</button>
+    </div>
+    <nav class="post-nav">
+      {% if newer %}<a href="{{ newer.get_absolute_url }}"><span>Newer</span><b>{{ newer.title }}</b></a>{% else %}<span></span>{% endif %}
+      {% if older %}<a class="older" href="{{ older.get_absolute_url }}"><span>Older</span><b>{{ older.title }}</b></a>{% endif %}
+    </nav>
+  </footer>
+</article>
+{% if related %}
+<section class="sec tint">
+  <div class="wrap">
+    <h2 class="title-anim related-title">Keep reading.</h2>
+    <div class="post-grid">{% for post in related %}{% include "blog/partials/card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

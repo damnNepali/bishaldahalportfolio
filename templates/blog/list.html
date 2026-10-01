@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{% if active_tag %}{{ active_tag.name }} · {% endif %}Blog — {{ profile.name }}{% endblock %}
+{% block content %}
+<section class="blog-hero">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <p class="status"><span class="live" aria-hidden="true"></span>Blog</p>
+    <h1 class="title-anim">{% if active_tag %}{{ active_tag.name }}{% else %}Thoughts, moves &amp; lessons.{% endif %}</h1>
+    <p class="lead rv">Writing on business, technology, strategy and money by {{ profile.name }}.</p>
+    <form class="search rv" method="get" role="search">
+      <label class="sr" for="q">Search posts</label>
+      <input id="q" name="q" value="{{ q }}" placeholder="Search posts" type="search">
+      <button class="btn solid sm" type="submit">Search</button>
+    </form>
+    {% if tags %}
+    <div class="filters rv">
+      <a class="filter{% if not active_tag %} on{% endif %}" href="{% url 'blog:list' %}">All</a>
+      {% for t in tags %}<a class="filter{% if active_tag == t %} on{% endif %}" href="{% url 'blog:tag' t.slug %}">{{ t.name }}</a>{% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+<section class="sec blog-sec">
+  <div class="wrap">
+    {% if page.object_list %}
+    <div class="post-grid">
+      {% for post in page.object_list %}{% include "blog/partials/card.html" %}{% endfor %}
+    </div>
+    {% if page.has_other_pages %}
+    <nav class="pager" aria-label="Pages">
+      {% if page.has_previous %}<a class="btn sm" href="?page={{ page.previous_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}">Newer</a>{% endif %}
+      <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+      {% if page.has_next %}<a class="btn sm" href="?page={{ page.next_page_number }}{% if q %}&q={{ q|urlencode }}{% endif %}">Older</a>{% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <div class="empty rv">
+      {% include "portfolio/partials/piece.html" with p="p" cls="gold" %}
+      <h2>{% if q %}No posts match “{{ q }}”.{% else %}The first post is on its way.{% endif %}</h2>
+      <p class="lead">{% if q %}Try another word.{% else %}Check back soon.{% endif %}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

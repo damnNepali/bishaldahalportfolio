@@ -1,0 +1,24 @@
+{% url 'home' as home %}
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="{{ home }}#top" id="brand">{% include "portfolio/partials/piece.html" with p="n" cls="gold" %}<span>{{ profile.name }}</span></a>
+    <nav class="links" id="links" aria-label="Primary">
+      <span class="links-pill" id="linksPill" aria-hidden="true"></span>
+      <a href="{{ home }}#roles">Roles</a>
+      <a href="{{ home }}#journey">Journey</a>
+      <a href="{{ home }}#businesses">Businesses</a>
+      <a href="{{ home }}#projects">Projects</a>
+      <a href="{% url 'tour' %}">3D tour</a>
+      <a href="{% url 'blog:list' %}"{% if request.resolver_match.app_name == 'blog' %} class="on" aria-current="page"{% endif %}>Blog</a>
+      <a href="{{ home }}#mission">EV mission</a>
+    </nav>
+    <a class="btn solid sm nav-cta" href="{{ home }}#contact">Contact</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="menu" aria-label="Open menu"><span></span><span></span></button>
+  </div>
+</header>
+<div class="menu" id="menu" role="dialog" aria-label="Menu" aria-modal="true">
+  <nav aria-label="Mobile">
+    <a href="{{ home }}#roles">Roles</a><a href="{{ home }}#journey">Journey</a><a href="{{ home }}#businesses">Businesses</a><a href="{{ home }}#projects">Projects</a>
+    <a href="{% url 'tour' %}">3D tour</a><a href="{% url 'blog:list' %}">Blog</a><a href="{{ home }}#impact">Impact</a><a href="{{ home }}#paisa">Paisa ko Rahasya</a><a href="{{ home }}#mission">EV mission</a><a href="{{ home }}#contact">Contact</a>
+  </nav>
+</div>

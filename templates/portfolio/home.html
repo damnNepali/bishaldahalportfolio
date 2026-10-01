@@ -1,0 +1,378 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+{# ================= HERO ================= #}
+<section class="hero" id="top">
+  <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="hero-in">
+    <div class="hero-copy" id="heroCopy">
+      <p class="status" data-hero><span class="live" aria-hidden="true"></span>{{ profile.location }}</p>
+      <h1 id="heroName" aria-label="{{ profile.name }}">{{ profile.name }}</h1>
+      <p class="headline" data-hero>{{ profile.headline }} <span>{{ profile.tagline }}</span></p>
+      {% if profile.intro %}<p class="intro" data-hero>{{ profile.intro }}</p>{% endif %}
+      <div class="ctas" data-hero>
+        <a class="btn solid magnetic" href="#projects">See my work</a>
+        <a class="btn magnetic" href="#contact">Get in touch</a>
+        {% if profile.resume %}<a class="btn ghost" href="{{ profile.resume.url }}" download>Download CV</a>{% endif %}
+      </div>
+    </div>
+
+    <div class="hero-board" id="heroBoard">
+      <div class="float-pc fp1" data-depth="1.2" aria-hidden="true">{% include "portfolio/partials/piece.html" with p="q" cls="gold" %}</div>
+      <div class="float-pc fp2" data-depth=".8" aria-hidden="true">{% include "portfolio/partials/piece.html" with p="n" cls="gold" %}</div>
+      <div class="float-pc fp3" data-depth=".6" aria-hidden="true">{% include "portfolio/partials/piece.html" with p="p" cls="volt" %}</div>
+      <div class="board-card" id="boardCard">
+        <div class="board" id="board" role="img" aria-label="Chessboard replaying Paul Morphy's Opera Game from 1858"></div>
+        <div class="board-meta">
+          <ol class="moves" id="moves" aria-hidden="true"></ol>
+          <div class="meta-row">
+            <span>Morphy's Opera Game, Paris 1858</span>
+            <button class="mini-btn" id="boardToggle" type="button" aria-pressed="false">Pause</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="scroll-cue" href="#manifesto" aria-label="Scroll down"><span></span></a>
+</section>
+
+{# ================= MANIFESTO (word-by-word) ================= #}
+{% if profile.manifesto %}
+<section class="manifesto" id="manifesto" aria-label="About">
+  <div class="mf-sticky"><p class="mf-text" id="mf">{{ profile.manifesto }}</p></div>
+</section>
+{% endif %}
+
+{# ================= STATS ================= #}
+{% if stats %}
+<section class="stats-band">
+  <div class="wrap stats">
+    {% for s in stats %}
+    <div class="stat rv"><b><span data-count="{{ s.value }}">{{ s.value }}</span>{{ s.suffix }}</b><span>{{ s.label }}</span></div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# ================= ROLES BENTO ================= #}
+<section class="sec" id="roles">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="title-anim">One player, many pieces.</h2>
+      <p class="rv">Developer, founder, community leader and chess player. Each role moves differently, and together they make the game.</p>
+    </div>
+    <div class="bento">
+      <article class="tile about lg rv tilt">
+        <div class="about-img"><img data-parallax src="{% if profile.photo %}{{ profile.photo.url }}{% else %}{% static 'images/bishal-portrait.jpg' %}{% endif %}" alt="Portrait of {{ profile.name }}" loading="lazy"></div>
+        <div class="about-body">
+          <h3>Hi, I'm {{ profile.name|cut:" Dahal" }}.</h3>
+          {% if profile.bio %}<p>{{ profile.bio }}</p>{% endif %}
+          <dl class="facts">
+            <div><dt>Based in</dt><dd>{{ profile.location }}</dd></div>
+            {% if profile.education %}<div><dt>Studying</dt><dd>{{ profile.education }}</dd></div>{% endif %}
+          </dl>
+        </div>
+      </article>
+      {% for r in roles %}
+      <article class="tile {{ r.size }}{% if r.accent %} accent{% endif %} rv tilt">
+        <span class="spot" aria-hidden="true"></span>
+        {% if r.accent %}{% include "portfolio/partials/piece.html" with p=r.piece cls="volt" extra="tile-pc" %}{% else %}{% include "portfolio/partials/piece.html" with p=r.piece cls="gold" extra="tile-pc" %}{% endif %}
+        <div class="tile-body">
+          {% if r.organization %}<span class="org">{{ r.organization }}</span>{% endif %}
+          <h3>{{ r.title }}</h3>
+          {% if r.description %}<p>{{ r.description }}</p>{% endif %}
+          {% if r.link %}<a class="tile-link" href="{{ r.link }}">Learn more</a>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ================= JOURNEY (experience & education timeline) ================= #}
+{% if experiences %}
+<section class="sec tint" id="journey">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="title-anim">My journey.</h2>
+      <p class="rv">Work, businesses, education and leadership — every move so far, newest first.</p>
+    </div>
+    {% if experience_kinds|length > 1 %}
+    <div class="filters rv" role="tablist" aria-label="Filter journey">
+      <button class="filter on" type="button" data-filter="all" role="tab" aria-selected="true">All</button>
+      {% for key, label in experience_kinds %}<button class="filter" type="button" data-filter="{{ key }}" role="tab" aria-selected="false">{{ label }}</button>{% endfor %}
+    </div>
+    {% endif %}
+    <div class="timeline-wrap">
+    <span class="tl-line" aria-hidden="true"><i id="tlFill"></i></span>
+    <ol class="timeline" id="timeline">
+      {% for e in experiences %}
+      <li class="tl-item" data-kind="{{ e.kind }}">
+        <span class="tl-dot" aria-hidden="true">{% include "portfolio/partials/piece.html" with p=e.piece cls="gold" %}</span>
+        <article class="tl-card tilt rv"><span class="spot" aria-hidden="true"></span>
+          <div class="tl-top">
+            <span class="kind k-{{ e.kind }}">{{ e.get_kind_display }}</span>
+            {% if e.period %}<span class="when">{{ e.period }}</span>{% endif %}
+          </div>
+          <div class="tl-head">
+            {% if e.logo %}<img class="tl-logo" src="{{ e.logo.url }}" alt="" loading="lazy">{% endif %}
+            <div><h3>{{ e.title }}</h3><span class="org">{{ e.organization }}{% if e.location %} · {{ e.location }}{% endif %}</span></div>
+          </div>
+          {% if e.description %}<p>{{ e.description }}</p>{% endif %}
+          {% if e.highlight_list %}<ul class="tl-hl">{% for h in e.highlight_list %}<li>{{ h }}</li>{% endfor %}</ul>{% endif %}
+          {% if e.link %}<a class="link" href="{{ e.link }}" target="_blank" rel="noopener">Visit</a>{% endif %}
+        </article>
+      </li>
+      {% endfor %}
+    </ol>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ================= BUSINESSES (stacking cards) ================= #}
+{% if businesses %}
+<section class="sec tint" id="businesses">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="title-anim">Businesses I build.</h2>
+      <p class="rv">Companies and organizations I've founded, led or built technology for.</p>
+    </div>
+    <div class="stack-cards">
+      {% for b in businesses %}
+      <article class="scard{% cycle ' tone-1' ' tone-2' ' tone-3' ' tone-4' ' tone-5' ' tone-6' %}" style="--i:{{ forloop.counter0 }}">
+        <div class="scard-in">
+          <div class="scard-copy">
+            <div class="scard-top">
+              {% if b.logo %}<img class="logo" src="{{ b.logo.url }}" alt="{{ b.name }} logo" loading="lazy">{% else %}<span class="logo mono" aria-hidden="true">{{ b.initials }}</span>{% endif %}
+              {% if b.category %}<span class="cat">{{ b.category }}</span>{% endif %}
+            </div>
+            <h3>{{ b.name }}</h3>
+            <span class="org">{{ b.role }}</span>
+            {% if b.description %}<p>{{ b.description }}</p>{% endif %}
+            {% if b.website %}<a class="btn solid sm" href="{{ b.website }}" target="_blank" rel="noopener">Visit {{ b.name }}</a>{% endif %}
+          </div>
+          <div class="scard-art" aria-hidden="true">
+            <div class="plinth"></div>
+            {% include "portfolio/partials/piece.html" with p=b.piece cls="gold" extra="scard-pc" %}
+          </div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ================= PROJECTS (horizontal gallery) ================= #}
+{% if projects %}
+<section class="projects" id="projects">
+  <div class="proj-pin" id="projPin">
+    <div class="wrap proj-head">
+      <h2 class="title-anim">Selected projects.</h2>
+      <p class="rv">Things I've designed and built. <span class="swipe-hint">Swipe to explore.</span></p>
+    </div>
+    <div class="proj-track" id="projTrack">
+      {% for pr in projects %}
+      <article class="proj">
+        <div class="proj-media">
+          {% if pr.image %}<img src="{{ pr.image.url }}" alt="Screenshot of {{ pr.title }}" loading="lazy">
+          {% else %}<div class="proj-ph">{% include "portfolio/partials/piece.html" with p=pr.piece cls="gold" %}</div>{% endif %}
+          <span class="proj-no">{{ forloop.counter|stringformat:"02d" }}</span>
+        </div>
+        <div class="proj-body">
+          <h3>{{ pr.title }}</h3>
+          <p>{{ pr.summary }}</p>
+          {% if pr.tech_list %}<ul class="chips">{% for t in pr.tech_list %}<li>{{ t }}</li>{% endfor %}</ul>{% endif %}
+          {% if pr.live_url or pr.github_url %}
+          <div class="proj-links">
+            {% if pr.live_url %}<a class="btn solid sm" href="{{ pr.live_url }}" target="_blank" rel="noopener">Live demo</a>{% endif %}
+            {% if pr.github_url %}<a class="btn sm" href="{{ pr.github_url }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </article>
+      {% endfor %}
+      <div class="proj-end" aria-hidden="true"></div>
+    </div>
+    <div class="wrap"><div class="proj-progress"><i id="projBar"></i></div></div>
+  </div>
+</section>
+{% endif %}
+
+{# ================= STACK ================= #}
+{% if skill_groups %}
+<section class="sec" id="stack">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="title-anim">Tech stack.</h2>
+      <p class="rv">The languages, frameworks and databases I build with.</p>
+    </div>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-row">{% for i in "12" %}<div class="mq-set">{% for group, items in skill_groups.items %}{% for s in items %}<span>{{ s.name }}</span>{% endfor %}{% endfor %}</div>{% endfor %}</div>
+    <div class="mq-row rev">{% for i in "12" %}<div class="mq-set">{% for group, items in skill_groups.items reversed %}{% for s in items %}<span>{{ s.name }}</span>{% endfor %}{% endfor %}</div>{% endfor %}</div>
+  </div>
+  <div class="wrap">
+    <div class="stack">
+      {% for group, items in skill_groups.items %}
+      <div class="stack-card rv tilt"><span class="spot" aria-hidden="true"></span>
+        <h3>{{ group }}</h3>
+        <ul class="chips">{% for s in items %}<li>{{ s.name }}</li>{% endfor %}</ul>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ================= LEADERSHIP & IMPACT (photo expands) ================= #}
+{% if leadership %}
+<section class="impact" id="impact" aria-label="Leadership and impact">
+  <div class="impact-sticky">
+    <div class="impact-frame" id="impactFrame">
+      <img src="{% static 'images/bishal-event.jpg' %}" alt="{{ profile.name }} at a conference in a ballroom" loading="lazy">
+    </div>
+    <div class="impact-shade" id="impactShade"></div>
+    <div class="impact-title" id="impactTitle">
+      <div class="wrap"><h2>Leadership beyond business.</h2><p>Service with the Lions and Leos, and a foundation of my own.</p></div>
+    </div>
+  </div>
+</section>
+<section class="sec lead-sec">
+  <div class="wrap">
+    <div class="lead-grid">
+      {% for l in leadership %}
+      <article class="lead-card rv tilt"><span class="spot" aria-hidden="true"></span>
+        {% include "portfolio/partials/piece.html" with p="b" cls="gold" extra="lead-pc" %}
+        <span class="org">{{ l.role }}{% if l.period %} · {{ l.period }}{% endif %}</span>
+        <h3>{{ l.organization }}</h3>
+        {% if l.description %}<p>{{ l.description }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ================= PAISA KO RAHASYA ================= #}
+<section class="sec" id="paisa">
+  <div class="wrap">
+    <div class="pkr rv">
+      <div class="pkr-copy">
+        <span class="org">Content &amp; education</span>
+        <h2>Paisa ko Rahasya</h2>
+        <p>{{ profile.pkr_intro|default:"Content on money, business and financial thinking." }}</p>
+        {% if profile.pkr_url %}<a class="btn solid magnetic" href="{{ profile.pkr_url }}" target="_blank" rel="noopener">Follow Paisa ko Rahasya</a>{% endif %}
+      </div>
+      <div class="pkr-art" aria-hidden="true">
+        <span class="coin c1">रु</span><span class="coin c2">रु</span><span class="coin c3">रु</span>
+        {% include "portfolio/partials/piece.html" with p="p" cls="gold" extra="pkr-pc" %}
+      </div>
+    </div>
+    {% if content_items %}
+    <div class="content-grid">
+      {% for c in content_items %}
+      <a class="content rv tilt" href="{{ c.url }}" target="_blank" rel="noopener">
+        {% if c.thumbnail %}<img src="{{ c.thumbnail.url }}" alt="" loading="lazy">{% endif %}
+        <span class="org">{{ c.get_platform_display }}{% if c.published_on %} · {{ c.published_on|date:"M Y" }}{% endif %}</span>
+        <h3>{{ c.title }}</h3>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ================= ACHIEVEMENTS ================= #}
+{% if achievements %}
+<section class="sec tint" id="achievements">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="title-anim">Achievements.</h2>
+      <p class="rv">Titles on the board and recognition off it.</p>
+    </div>
+    <ul class="ach">
+      {% for a in achievements %}
+      <li class="rv">
+        <span class="ach-ic">{% if a.category == "chess" %}{% include "portfolio/partials/piece.html" with p="n" cls="gold" %}{% else %}{% include "portfolio/partials/piece.html" with p="k" cls="gold" %}{% endif %}</span>
+        <div><h3>{{ a.title }}</h3>{% if a.event %}<span class="org">{{ a.event }}</span>{% endif %}{% if a.description %}<p>{{ a.description }}</p>{% endif %}</div>
+        <span class="yr">{{ a.year|default:"" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+{# ================= EV MISSION ================= #}
+{% for m in missions %}
+<section class="sec" id="mission">
+  <div class="wrap">
+    <div class="mission">
+      <div class="mission-copy">
+        <span class="org volt-text">Next mission · {{ m.status }}</span>
+        <h2 class="title-anim">{{ m.title }}</h2>
+        {% if m.description %}<p class="rv">{{ m.description }}</p>{% endif %}
+        {% if m.milestone_list %}
+        <ol class="steps">
+          {% for s in m.milestone_list %}<li class="rv{% if s.done %} done{% endif %}"><span class="tick" aria-hidden="true"></span>{{ s.text }}{% if s.done %}<span class="sr"> (done)</span>{% endif %}</li>{% endfor %}
+        </ol>
+        {% endif %}
+      </div>
+      <div class="ring rv{% if m.progress >= 100 %} full{% endif %}" data-progress="{{ m.progress }}" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ m.progress }}" aria-label="{{ m.title }} progress">
+        <svg class="ring-svg" viewBox="0 0 300 300" aria-hidden="true">
+          <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5AC8FA"/><stop offset="1" stop-color="#0071E3"/></linearGradient></defs>
+          <circle class="ring-track" cx="150" cy="150" r="128"/>
+          <circle class="ring-bar" cx="150" cy="150" r="128"/>
+        </svg>
+        <div class="ring-center">
+          {% include "portfolio/partials/piece.html" with p="p" cls="volt" extra="ring-pc" %}
+          <b><span data-count="{{ m.progress }}">{{ m.progress }}</span>%</b>
+          <span>charged</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endfor %}
+
+{# ================= LATEST WRITING ================= #}
+{% if latest_posts %}
+<section class="sec" id="writing">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 class="title-anim">Latest writing.</h2>
+      <p class="rv">Notes on business, technology, strategy and money. <a class="link" href="{% url 'blog:list' %}">Read the blog</a></p>
+    </div>
+    <div class="post-grid">
+      {% for post in latest_posts %}{% include "blog/partials/card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{# ================= CONTACT ================= #}
+<section class="sec tint" id="contact">
+  <div class="wrap contact">
+    <div>
+      <h2 class="title-anim">Make your move.</h2>
+      <p class="lead rv">A project, a partnership, an investment or a game of chess. Send a message and it lands straight in my inbox.</p>
+      {% if profile.email %}<p class="rv"><a class="link big" href="mailto:{{ profile.email }}">{{ profile.email }}</a></p>{% endif %}
+      {% if profile.phone %}<p class="rv muted">{{ profile.phone }}</p>{% endif %}
+    </div>
+    <form class="form rv" id="contactForm" method="post" action="{% url 'contact' %}" novalidate>
+      {% csrf_token %}
+      {% if messages %}{% for msg in messages %}<p class="form-flash {{ msg.tags }}">{{ msg }}</p>{% endfor %}{% endif %}
+      <div class="field fl">{{ form.name }}<label for="id_name">Name</label><small class="err" data-for="name"></small></div>
+      <div class="field fl">{{ form.email }}<label for="id_email">Email</label><small class="err" data-for="email"></small></div>
+      <div class="field full sel"><label for="id_topic">Topic</label>{{ form.topic }}</div>
+      <div class="field fl full">{{ form.message }}<label for="id_message">Message</label><small class="err" data-for="message"></small></div>
+      <div class="hp" aria-hidden="true"><label for="id_website">Leave this empty</label>{{ form.website }}</div>
+      <div class="form-foot full"><button class="btn solid magnetic" type="submit"><span class="btn-label">Send message</span></button><p class="form-note" id="formNote" role="status"></p></div>
+      <div class="sent" id="sent" aria-hidden="true">{% include "portfolio/partials/piece.html" with p="k" cls="gold" %}<b>Message sent.</b><span>I'll reply within a few days.</span></div>
+    </form>
+  </div>
+</section>
+{% endblock %}

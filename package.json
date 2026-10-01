@@ -1,0 +1,13 @@
+{
+  "name": "bishal-portfolio-tour",
+  "private": true,
+  "description": "Builds the 3D tour (frontend/tour) into static/js/bd-tour.min.js",
+  "scripts": {
+    "build": "esbuild frontend/tour/main.js --bundle --format=esm --minify --target=es2020 --outfile=static/js/bd-tour.min.js",
+    "watch": "esbuild frontend/tour/main.js --bundle --format=esm --target=es2020 --sourcemap --outfile=static/js/bd-tour.min.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0",
+    "three": "0.186.1"
+  }
+}
